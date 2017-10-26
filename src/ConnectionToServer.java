@@ -1,3 +1,5 @@
+import org.json.simple.JSONObject;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -5,8 +7,8 @@ import java.net.Socket;
 public class ConnectionToServer {
   int port =3535;
 //  String ip;
-
-
+DataInputStream in;
+    DataOutputStream out;
   public void con (String ip) {
       Socket socket = null;
       try{
@@ -14,29 +16,37 @@ public class ConnectionToServer {
           socket = new Socket(appr,port);
           InputStream sin = socket.getInputStream();
           OutputStream sout = socket.getOutputStream();
-          DataInputStream in = new DataInputStream(sin);
-          DataOutputStream out = new DataOutputStream(sout);
-          BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
-          String line = null;
-          System.out.println("Type in something and press enter. Will send it to the server and tell ya what it thinks.");
-          System.out.println();
+         in = new DataInputStream(sin);
+          out = new DataOutputStream(sout);
 
-          while (true) {
-              line = keyboard.readLine(); // ждем пока пользователь введет что-то и нажмет кнопку Enter.
-              System.out.println("Sending this line to the server...");
-              out.writeUTF(line); // отсылаем введенную строку текста серверу.
-              out.flush(); // заставляем поток закончить передачу данных.
-              line = in.readUTF(); // ждем пока сервер отошлет строку текста.
-              System.out.println("The server was very polite. It sent me this : " + line);
-              System.out.println("Looks like the server is pleased with us. Go ahead and enter more lines.");
-              System.out.println();
-          }
+
+
+
       } catch (Exception x) {
           x.printStackTrace();
       }
 
 
 
+      }
+      public boolean sendAuthData(JSONObject logPas){
+          try {
+              out.write(logPas.toString().getBytes());
+              out.flush();
+              boolean answer = in.readBoolean();
+             if(!answer){
+                 System.out.println("Auth Failed");
+             }else if(answer){
+                 System.out.println("Permission Granted");
+                 return true;
+             }
+
+
+          } catch (IOException e) {
+              e.printStackTrace();
+          }
+
+          return false;
       }
       }
 
