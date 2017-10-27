@@ -9,8 +9,9 @@ public class ConnectionToServer {
 //  String ip;
 DataInputStream in;
     DataOutputStream out;
+    Socket socket = null;
   public void con (String ip) {
-      Socket socket = null;
+
       try{
           InetAddress appr = InetAddress.getByName(ip);
           socket = new Socket(appr,port);
@@ -24,6 +25,7 @@ DataInputStream in;
 
       } catch (Exception x) {
           x.printStackTrace();
+          System.out.println("Connection error, try again later");
       }
 
 
@@ -48,7 +50,23 @@ DataInputStream in;
 
           return false;
       }
-      }
+
+    public void sendY() {
+        try {
+            out.writeUTF("y");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendN() {
+        try {
+            out.writeUTF("n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
 
 
 

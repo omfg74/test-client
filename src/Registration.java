@@ -9,9 +9,9 @@ public class Registration {
         words[2]= "Enter your login...";
         words[3]= "Enter your password...";
 
-        System.out.println("Enter your Name ");
+//        System.out.println("Enter your Name ");
         for (int i = 0; i <userData.length ; i++) {
-
+            System.out.println(words[i]);
 
         Scanner nameIn = new Scanner(System.in);
         String name = nameIn.nextLine();

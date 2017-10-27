@@ -13,11 +13,14 @@ public class Main {
         CheckReg checkReg = new CheckReg();
         boolean reged = checkReg.check();
         if(!reged){
+            connectToServer.sendN();
             System.out.println("Wellcome to registration");
             Registration registration = new Registration();
             String[] userData = registration.startRegistration();
 
+
         }else if(reged){
+            connectToServer.sendY();
             System.out.println("Autorise yourself");
             Autorisation autorisation = new Autorisation(connectToServer);
             boolean auth = autorisation.autorize();
