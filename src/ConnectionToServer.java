@@ -7,18 +7,17 @@ import java.net.Socket;
 public class ConnectionToServer {
   int port =3535;
 //  String ip;
-DataInputStream in;
-    DataOutputStream out;
+InputStream in;
+    OutputStream outputStream;
     Socket socket = null;
   public void con (String ip) {
 
       try{
           InetAddress appr = InetAddress.getByName(ip);
           socket = new Socket(appr,port);
-          InputStream sin = socket.getInputStream();
-          OutputStream sout = socket.getOutputStream();
-         in = new DataInputStream(sin);
-          out = new DataOutputStream(sout);
+          in = socket.getInputStream();
+          outputStream = socket.getOutputStream();
+
 
 
 
@@ -33,9 +32,10 @@ DataInputStream in;
       }
       public boolean sendAuthData(JSONObject logPas){
           try {
-              out.write(logPas.toString().getBytes());
-              out.flush();
-              boolean answer = in.readBoolean();
+              outputStream.write(logPas.toString().getBytes());
+              outputStream.flush();
+              DataInputStream dataInputStream = new DataInputStream(in);
+              boolean answer = dataInputStream.readBoolean();
              if(!answer){
                  System.out.println("Auth Failed");
              }else if(answer){
@@ -53,18 +53,32 @@ DataInputStream in;
 
     public void sendY() {
         try {
-            out.writeUTF("y");
+            String y = "y\n";
+            outputStream.write(y.getBytes());
+            outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void sendN() {
+
         try {
-            out.writeUTF("n");
+            outputStream.write("n\n".getBytes());
+            outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void sendRegistrationData(JSONObject packedRegistratioonData) {
+        try {
+            outputStream.write(packedRegistratioonData.toString().getBytes());
+        } catch (IOException e) {
+            System.out.println("Error sending registration data");
+            e.printStackTrace();
+        }
+
     }
 }
 

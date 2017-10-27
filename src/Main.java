@@ -1,7 +1,10 @@
 import com.sun.org.apache.regexp.internal.RE;
+import org.json.simple.JSONObject;
+
+import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
 
         Invite invite = new Invite();
@@ -17,6 +20,9 @@ public class Main {
             System.out.println("Wellcome to registration");
             Registration registration = new Registration();
             String[] userData = registration.startRegistration();
+            PackDaJSON packDaJSON = new PackDaJSON();
+            JSONObject packedRegistratioonData = packDaJSON.packRegistrationData(userData);
+            connectToServer.sendRegistrationData(packedRegistratioonData);
 
 
         }else if(reged){
