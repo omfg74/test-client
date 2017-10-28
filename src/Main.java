@@ -2,6 +2,7 @@ import com.sun.org.apache.regexp.internal.RE;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -16,18 +17,36 @@ public class Main {
         CheckReg checkReg = new CheckReg();
         boolean reged = checkReg.check();
         if(!reged){
-            connectToServer.sendN();
-            System.out.println("Wellcome to registration");
-            Registration registration = new Registration();
-            String[] userData = registration.startRegistration();
-            PackDaJSON packDaJSON = new PackDaJSON();
-            JSONObject packedRegistratioonData = packDaJSON.packRegistrationData(userData);
-            connectToServer.sendRegistrationData(packedRegistratioonData);
 
+            Boolean answer = connectToServer.sendN();
+            if(!answer) {
+
+                registration(connectToServer);
+                boolean answerIfExsits = connectToServer.answerIfExsits();
+                if(answerIfExsits){
+                    System.out.println("Choose another login or Authorise y/n");
+                    registration(connectToServer);
+                }else {
+                    System.out.println("User created authorise now... ");
+                    Autorisation autorisation = new Autorisation(connectToServer);
+                    boolean auth = autorisation.autorize();
+                    if (auth){
+
+                    }
+                }
+                //ели такой уже есть
+            }else {
+                System.out.println("Authorise yourself");
+                Autorisation autorisation = new Autorisation(connectToServer);
+                boolean auth = autorisation.autorize();
+                if (auth){
+
+                }
+            }
 
         }else if(reged){
             connectToServer.sendY();
-            System.out.println("Autorise yourself");
+            System.out.println("Authorise yourself");
             Autorisation autorisation = new Autorisation(connectToServer);
             boolean auth = autorisation.autorize();
             if (auth){
@@ -40,5 +59,41 @@ public class Main {
         System.out.println("DisConnected...");
 
 
+    }
+     static void registration(ConnectionToServer connectToServer){
+         System.out.println("Wellcome to registration");
+         Registration registration = new Registration();
+         String[] userData = registration.startRegistration();
+         PackDaJSON packDaJSON = new PackDaJSON();
+         JSONObject packedRegistratioonData = packDaJSON.packRegistrationData(userData);
+         connectToServer.sendRegistrationData(packedRegistratioonData);
+         boolean answerIfExsits = connectToServer.answerIfExsits();
+         if(answerIfExsits){
+             System.out.println("Choose another login or Authorise y/n");
+             Scanner sc = new Scanner(System.in);
+             String a = sc.nextLine();
+             if(a.equalsIgnoreCase("y")){
+                 connectToServer.sendN();
+                 registration(connectToServer);
+             }else if(a.equalsIgnoreCase("n")){
+                 System.out.println("Authorise yourself");
+                 Autorisation autorisation = new Autorisation(connectToServer);
+                 boolean auth = autorisation.autorize();
+                 if (auth){
+
+                 }else {
+                     connectToServer.sendN();
+                     registration(connectToServer);
+                 }
+             }
+
+         }else {
+             System.out.println("User created authorise now... ");
+             Autorisation autorisation = new Autorisation(connectToServer);
+             boolean auth = autorisation.autorize();
+             if (auth){
+
+             }
+         }
     }
 }

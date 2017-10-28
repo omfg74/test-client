@@ -52,33 +52,60 @@ InputStream in;
       }
 
     public void sendY() {
+
         try {
             String y = "y\n";
             outputStream.write(y.getBytes());
             outputStream.flush();
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
-    public void sendN() {
-
+    public boolean sendN() {
+        boolean answer = false;
         try {
             outputStream.write("n\n".getBytes());
             outputStream.flush();
+//            DataInputStream inputStream = new DataInputStream(in);
+//            answer = inputStream.readBoolean();
+//            if (answer){
+//                answer =true;
+//            }
+//            else if(!answer){
+//                answer = false;
+//            };
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return answer;
     }
 
     public void sendRegistrationData(JSONObject packedRegistratioonData) {
         try {
-            outputStream.write(packedRegistratioonData.toString().getBytes());
+          PrintWriter pw = new PrintWriter(socket.getOutputStream());
+            pw.println(packedRegistratioonData.toString());
+//            dataInputStream.writeUTF("\n");
+            pw.flush();
         } catch (IOException e) {
             System.out.println("Error sending registration data");
             e.printStackTrace();
         }
 
+    }
+
+    public boolean answerIfExsits() {
+          boolean answer  =false;
+          DataInputStream dataInputStream = new DataInputStream(in);
+        try {
+            answer =dataInputStream.readBoolean();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return answer;
     }
 }
 
