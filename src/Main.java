@@ -1,6 +1,7 @@
 import Objects.User;
 import org.json.simple.JSONObject;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -31,7 +32,7 @@ public class Main {
                     Autorisation autorisation = new Autorisation(connectToServer);
                     boolean auth = autorisation.autorize();
                     if (auth){
-
+connectToServer.autorised();
                     }
                 }
                 //ели такой уже есть
@@ -40,7 +41,7 @@ public class Main {
                 Autorisation autorisation = new Autorisation(connectToServer);
                 boolean auth = autorisation.autorize();
                 if (auth){
-
+connectToServer.autorised();
                 }
             }
 
@@ -50,7 +51,7 @@ public class Main {
             Autorisation autorisation = new Autorisation(connectToServer);
             boolean auth = autorisation.autorize();
             if (auth){
-
+connectToServer.autorised();
             }
 
         }
@@ -76,6 +77,7 @@ public class Main {
                  connectToServer.sendN();
                  registration(connectToServer);
              }else if(a.equalsIgnoreCase("n")){
+                 connectToServer.sendY();
                  authorisation(connectToServer);
              }
 
@@ -102,4 +104,5 @@ public class Main {
             registration(connectToServer);
         }
     }
+
 }

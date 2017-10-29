@@ -4,6 +4,7 @@ import org.json.simple.JSONObject;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class ConnectionToServer {
   int port =3535;
@@ -34,15 +35,20 @@ InputStream in;
       public boolean sendAuthData(JSONObject logPas){
           try {
               PrintWriter pw = new PrintWriter(outputStream);
-              pw.println(logPas.toString().getBytes());
+              pw.println(logPas.toString());
               pw.flush();
               DataInputStream dataInputStream = new DataInputStream(in);
               boolean answer = dataInputStream.readBoolean();
              if(!answer){
                  System.out.println("Auth Failed");
+                 socket.close();
              }else if(answer){
                  System.out.println("Permission Granted");
+                 User nameSurname = receiveNameAndSurname();
+//                 System.out.println("Hello "+nameSurname.getName() + " "+nameSurname.getSurName());
+
                  return true;
+
              }
 
 
@@ -100,10 +106,11 @@ InputStream in;
     }
 
     public boolean answerIfExsits() {
-          boolean answer  =false;
+         Boolean answer  =false;
           DataInputStream dataInputStream = new DataInputStream(in);
         try {
-            answer =dataInputStream.readBoolean();
+            answer = dataInputStream.readBoolean();
+            System.out.println(answer);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -114,15 +121,49 @@ InputStream in;
         User user = new User();
           DataInputStream dataInputStream = new DataInputStream(in);
         try {
-            String nameSurname = dataInputStream.readUTF();
+            boolean authOk = dataInputStream.readBoolean();
+            if (authOk){
+                String nameSurname = dataInputStream.readUTF();//здесь встали
             JsonParser jsonParser = new JsonParser();
-            user = jsonParser.parseNameSurname(nameSurname,user);
+            user = jsonParser.parseNameSurname(nameSurname, user);
+        }else {
+                receiveNameAndSurname();
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
         return user;
     }
+    public  void autorised(){
+        DataInputStream inputStream = new DataInputStream(in);
+        System.out.println("1 Create new task");
+        System.out.println("2 List all my tasks");
+        System.out.println("3 exit");
+        Scanner scanner = new Scanner(System.in);
+        int ans = Integer.parseInt(scanner.nextLine());
+        if(ans==3){
+            System.exit(0);
+
+        }else if(ans==2){
+
+
+        try {
+
+            DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+            outputStream.write(ans);
+            outputStream.flush();
+            CreateNewTask createNewTask = new CreateNewTask();
+           createNewTask.run();
+           autorised();
+    }catch (Exception e){
+            System.out.println("Only digits!");
+            autorised();
+        }
+        }else {
+            //Получаем статистику
+        }
+      }
 }
 
 
