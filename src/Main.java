@@ -1,4 +1,4 @@
-import com.sun.org.apache.regexp.internal.RE;
+import Objects.User;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -76,24 +76,30 @@ public class Main {
                  connectToServer.sendN();
                  registration(connectToServer);
              }else if(a.equalsIgnoreCase("n")){
-                 System.out.println("Authorise yourself");
-                 Autorisation autorisation = new Autorisation(connectToServer);
-                 boolean auth = autorisation.autorize();
-                 if (auth){
-
-                 }else {
-                     connectToServer.sendN();
-                     registration(connectToServer);
-                 }
+                 authorisation(connectToServer);
              }
 
          }else {
-             System.out.println("User created authorise now... ");
-             Autorisation autorisation = new Autorisation(connectToServer);
-             boolean auth = autorisation.autorize();
-             if (auth){
+             boolean autorised = false;
+             while (!autorised){
+                 authorisation(connectToServer);
 
              }
          }
+    }
+    public static void authorisation(ConnectionToServer connectToServer){
+        System.out.println("User created authorise now... ");
+        Autorisation autorisation = new Autorisation(connectToServer);
+        boolean auth = autorisation.autorize();
+        if (auth){
+            User nameSurname  = connectToServer.receiveNameAndSurname();
+
+            System.out.println("Hello "+nameSurname.getName()+" "+nameSurname.getSurName()+"!");
+            System.out.println("Main menu:");
+
+        }else {
+            connectToServer.sendN();
+            registration(connectToServer);
+        }
     }
 }

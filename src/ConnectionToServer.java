@@ -1,3 +1,4 @@
+import Objects.User;
 import org.json.simple.JSONObject;
 
 import java.io.*;
@@ -32,8 +33,9 @@ InputStream in;
       }
       public boolean sendAuthData(JSONObject logPas){
           try {
-              outputStream.write(logPas.toString().getBytes());
-              outputStream.flush();
+              PrintWriter pw = new PrintWriter(outputStream);
+              pw.println(logPas.toString().getBytes());
+              pw.flush();
               DataInputStream dataInputStream = new DataInputStream(in);
               boolean answer = dataInputStream.readBoolean();
              if(!answer){
@@ -106,6 +108,20 @@ InputStream in;
             e.printStackTrace();
         }
         return answer;
+    }
+
+    public User receiveNameAndSurname() {
+        User user = new User();
+          DataInputStream dataInputStream = new DataInputStream(in);
+        try {
+            String nameSurname = dataInputStream.readUTF();
+            JsonParser jsonParser = new JsonParser();
+            user = jsonParser.parseNameSurname(nameSurname,user);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 }
 
