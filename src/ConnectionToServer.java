@@ -154,7 +154,7 @@ InputStream in;
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
             outputStream.write(ans);
             outputStream.flush();
-            CreateNewTask createNewTask = new CreateNewTask();
+            CreateNewTask createNewTask = new CreateNewTask(socket);
            createNewTask.run();
            autorised();
     }catch (Exception e){

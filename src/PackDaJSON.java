@@ -1,3 +1,4 @@
+import Objects.User;
 import org.json.simple.JSONObject;
 
 public class PackDaJSON {
@@ -17,5 +18,15 @@ public class PackDaJSON {
         jsonObject.put("Password",userData[3]);
         return jsonObject;
 
+    }
+
+    public JSONObject packNewTask(User user) {
+        JSONObject packedTask=new JSONObject();
+        packedTask.put("login",user.getLogin());
+        packedTask.put("task","newTask");
+
+
+
+        return packedTask;
     }
 }
