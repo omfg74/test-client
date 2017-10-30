@@ -10,9 +10,9 @@ public class CreateNewTask  implements Runnable{
 private Socket socket = null;
 private User user;
 
-    public CreateNewTask(Socket socket) {
+    public CreateNewTask(Socket socket, User user) {
         this.socket = socket;
-//        this.user = user;
+        this.user = user;
     }
 
     public void run() {

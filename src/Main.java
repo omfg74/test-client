@@ -3,113 +3,59 @@ import org.json.simple.JSONObject;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.net.Socket;
 import java.util.Scanner;
 
 public class Main {
+public static  User user = new User();
     public static void main(String[] args) throws IOException {
 
 
         Invite invite = new Invite();
         String hello = invite.hello();
         ConnectionToServer connectToServer = new ConnectionToServer();
-
-
-                connectToServer.con(hello);
+ connectToServer.con(hello);
         CheckReg checkReg = new CheckReg();
         boolean reged = checkReg.check();
-        if(!reged){
+        boolean authorised =false;
+        while (!authorised){
+        if (reged) {
+     Autorisation autorisation = new Autorisation(connectToServer);
+     authorised = autorisation.autorize();
 
-            Boolean answer = connectToServer.sendN();
-            if(!answer) {
-
-                registration(connectToServer);
-                boolean answerIfExsits = connectToServer.answerIfExsits();
-                if(answerIfExsits){
-                    System.out.println("Choose another login or Authorise y/n");
-                    registration(connectToServer);
-                }else {
-                    System.out.println("User created authorise now... ");
-                    Autorisation autorisation = new Autorisation(connectToServer);
-                    boolean auth = autorisation.autorize();
-                    if (auth){
-connectToServer.autorised();
-                    }
-                }
-                //ели такой уже есть
-            }else {
-                System.out.println("Authorise yourself");
+        }else if(!reged){
+            Registration registration = new Registration(connectToServer);
+            String[] collectRegData = registration.startRegistration();
+            PackDaJSON packDaJSON = new PackDaJSON();
+            JSONObject packedREg = packDaJSON.packRegistrationData(collectRegData);
+            boolean registred = registration.sendRegistrationData(packedREg,connectToServer);
+            if(registred){
                 Autorisation autorisation = new Autorisation(connectToServer);
-                boolean auth = autorisation.autorize();
-                if (auth){
-connectToServer.autorised();
-                }
+                autorisation.autorize();
+            }else {
+                System.out.println("failed to authorise try again later");
+                connectToServer.socket.close();
+                System.exit(1);
             }
+        }
+        }
+        int command = -1;
+        while (command==-1||command==2||command==1){
+            System.out.println("1 Create new task");
+            System.out.println("2 List tasks");
+            System.out.println("3 exit");
 
-        }else if(reged){
-            connectToServer.sendY();
-            System.out.println("Authorise yourself");
-            Autorisation autorisation = new Autorisation(connectToServer);
-            boolean auth = autorisation.autorize();
-            if (auth){
-connectToServer.autorised();
+                    TaskPicker taskPicker = new TaskPicker();
+            command =taskPicker.pickTheTask();
+            if(command==1){
+                CreateNewTask createNewTask = new CreateNewTask(connectToServer.socket,user);
+                createNewTask.run();
+            }else if(command == 2){
+
+            }else {
+                System.exit(0);
             }
-
         }
 
-
-        System.out.println("DisConnected...");
-
-
     }
-     static void registration(ConnectionToServer connectToServer){
-         System.out.println("Wellcome to registration");
-         Registration registration = new Registration();
-         String[] userData = registration.startRegistration();
-         PackDaJSON packDaJSON = new PackDaJSON();
-         JSONObject packedRegistratioonData = packDaJSON.packRegistrationData(userData);
-         connectToServer.sendRegistrationData(packedRegistratioonData);
-         boolean answerIfExsits = connectToServer.answerIfExsits();
-         if(answerIfExsits){
-             System.out.println("Choose another login or Authorise y/n");
-             Scanner sc = new Scanner(System.in);
-             String a = sc.nextLine();
-             if(a.equalsIgnoreCase("y")){
-                 connectToServer.sendN();
-                 registration(connectToServer);
-             }else if(a.equalsIgnoreCase("n")){
-                 connectToServer.sendY();
-                 authorisation(connectToServer);
-             }
-
-         }else {
-             boolean autorised = false;
-             while (!autorised){
-                 authorisation(connectToServer);
-
-             }
-         }
-    }
-    public static void authorisation(ConnectionToServer connectToServer){
-        System.out.println("User created authorise now... ");
-        Autorisation autorisation = new Autorisation(connectToServer);
-        boolean auth = autorisation.autorize();
-        if (auth){
-            //допилить получение
-            DataInputStream dataInputStream = new DataInputStream(connectToServer.in);
-            try {
-                boolean authOk = dataInputStream.readBoolean();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            User nameSurname  = connectToServer.receiveNameAndSurname();
-
-            System.out.println("Hello "+nameSurname.getName()+" "+nameSurname.getSurName()+"!");
-            System.out.println("Main menu:");
-
-        }else {
-            connectToServer.sendN();
-            registration(connectToServer);
-        }
-    }
-
 }
