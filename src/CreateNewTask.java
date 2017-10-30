@@ -24,6 +24,7 @@ private User user;
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
             String taskResult = dataInputStream.readUTF();
             System.out.println(taskResult);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
