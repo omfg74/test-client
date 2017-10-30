@@ -94,6 +94,13 @@ connectToServer.autorised();
         Autorisation autorisation = new Autorisation(connectToServer);
         boolean auth = autorisation.autorize();
         if (auth){
+            //допилить получение
+            DataInputStream dataInputStream = new DataInputStream(connectToServer.in);
+            try {
+                boolean authOk = dataInputStream.readBoolean();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             User nameSurname  = connectToServer.receiveNameAndSurname();
 
             System.out.println("Hello "+nameSurname.getName()+" "+nameSurname.getSurName()+"!");

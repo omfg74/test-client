@@ -45,7 +45,7 @@ InputStream in;
              }else if(answer){
                  System.out.println("Permission Granted");
                  User nameSurname = receiveNameAndSurname();
-//                 System.out.println("Hello "+nameSurname.getName() + " "+nameSurname.getSurName());
+                 System.out.println("Hello "+nameSurname.getName() + " "+nameSurname.getSurName());
 
                  return true;
 
@@ -121,7 +121,8 @@ InputStream in;
         User user = new User();
           DataInputStream dataInputStream = new DataInputStream(in);
         try {
-            boolean authOk = dataInputStream.readBoolean();
+//            boolean authOk = dataInputStream.readBoolean();
+         boolean authOk= true;//костыль ебаный
             if (authOk){
                 String nameSurname = dataInputStream.readUTF();//здесь встали
             JsonParser jsonParser = new JsonParser();
