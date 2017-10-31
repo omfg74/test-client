@@ -1,3 +1,4 @@
+import Objects.Answer;
 import org.json.simple.JSONObject;
 
 import java.io.DataInputStream;
@@ -31,25 +32,29 @@ public class Registration {
         return userData;
     }
     public boolean sendRegistrationData(JSONObject packedRegistratioonData,ConnectionToServer connectionToServer) {
-        boolean answer = false;
+        Answer answer = new Answer();
         try {
 
 
-            PrintWriter pw1 = new PrintWriter(connectionToServer.socket.getOutputStream());
-            pw1.println("n\n");
-            pw1.flush();
+//            PrintWriter pw1 = new PrintWriter(connectionToServer.socket.getOutputStream());
+//            pw1.println("n\n");
+//            pw1.flush();
             DataOutputStream dataOutputStream = new DataOutputStream(connectionToServer.socket.getOutputStream());
             dataOutputStream.writeUTF(packedRegistratioonData.toString());
 //            dataInputStream.writeUTF("\n");
             dataOutputStream.flush();
             DataInputStream dataInputStream = new DataInputStream(connectionToServer.socket.getInputStream());
-            answer= dataInputStream.readBoolean();
-            System.out.println("Registration "+answer);
+            String ans= dataInputStream.readUTF();
+//            System.out.println("Registration "+answer);
+           JsonParser jsonParser = new JsonParser();
+           answer = jsonParser.parseRegAnswer(ans);
+            System.out.println(answer.getText());
+
         } catch (IOException e) {
             System.out.println("Error sending registration data");
             e.printStackTrace();
         }
-return  answer;
+return  answer.getAnswer();
     }
 
 }

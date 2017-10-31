@@ -1,3 +1,4 @@
+import Objects.Answer;
 import Objects.TaskList;
 import Objects.User;
 import org.json.simple.JSONArray;
@@ -37,5 +38,21 @@ public class JsonParser {
         }
 
 
+    }
+
+    public Answer parseRegAnswer(String s) {
+        Answer answer = new Answer();
+        JSONParser jsonParser = new JSONParser();
+
+        try {
+            JSONObject jo = (JSONObject)jsonParser.parse(s);
+            Boolean ans = (Boolean)jo.get("Answer");
+            String text = (String)jo.get("Text ");
+            answer.setAnswer((ans));
+            answer.setText(text);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return answer;
     }
 }
