@@ -55,4 +55,33 @@ public class JsonParser {
         }
         return answer;
     }
+
+    public Answer parseAuthAnswer(String s) {
+        Answer answer = new Answer();
+        JSONParser jsonParser = new JSONParser();
+        try {
+            JSONObject jo = (JSONObject)jsonParser.parse(s);
+            Boolean ans = (Boolean) jo.get("Answer");
+            String text = (String)jo.get("Text ");
+            answer.setAnswer(ans);
+            answer.setText(text);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return answer;
+    }
+
+    public JSONObject parseTheTaskResult(String taskResult) {
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jo=null;
+        try {
+            jo = (JSONObject)jsonParser.parse(taskResult);
+            String a =(String)jo.get("taskType");
+            System.out.println(a);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return jo;
+    }
 }

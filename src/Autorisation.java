@@ -1,3 +1,4 @@
+import Objects.Answer;
 import Objects.User;
 import org.json.simple.JSONObject;
 
@@ -20,6 +21,7 @@ public class Autorisation {
   System.out.println("Hello enter your login");
         Scanner loginSc = new Scanner(System.in);
         String login  = loginSc.nextLine();
+        Main.user.setLogin(login);
         System.out.println("Enter Password ");
         loginSc = new Scanner(System.in);
         String password = loginSc.nextLine();
@@ -30,32 +32,43 @@ public class Autorisation {
         return auth;// здесь впилить проверку паролья
 }
     public boolean sendAuthData(JSONObject logPas,String login){
-        boolean answer = false;
-        try {
+        Answer answer = new Answer();
+//        try {
 
 //            user.setLogin(login);
-            DataOutputStream dataOutputStream = new DataOutputStream(connectionToServer.socket.getOutputStream());
+        DataOutputStream dataOutputStream = null;
+        try {
+            dataOutputStream = new DataOutputStream(connectionToServer.socket.getOutputStream());
             dataOutputStream.writeUTF(logPas.toString());
             dataOutputStream.flush();
             DataInputStream dataInputStream = new DataInputStream(connectionToServer.socket.getInputStream());
+            String ans = dataInputStream.readUTF();
+            JsonParser jsonParser = new JsonParser();
+           answer =jsonParser.parseAuthAnswer(ans);
+            System.out.println("Auth: "+answer.getText());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+//            DataInputStream dataInputStream = new DataInputStream(connectionToServer.socket.getInputStream());
             //здес ждем подтверждение авторизации;
-           answer = dataInputStream.readBoolean();
-            System.out.println("Auth "+answer);
-            if(!answer){
-                System.out.println("Auth Failed");
-                connectionToServer.socket.close();
-                System.exit(1);
-            }else if(answer){
+//           answer = dataInputStream.readBoolean();
+//            System.out.println("Auth "+answer);
+//            if(!answer){
+//                System.out.println("Auth Failed");
+//                connectionToServer.socket.close();
+//                System.exit(1);
+//            }else if(answer){
 //                System.out.println("Permission Granted");
                 //получить имя фамилию
 //                 User nameSurname = receiveNameAndSurname();
 //                 System.out.println("Hello "+nameSurname.getName() + " "+nameSurname.getSurName());
 
-                answer = true;
+//                answer = true;
 
-            }
-} catch (IOException e) {
-            e.printStackTrace();
-        }
-    return answer;
+//            }
+//} catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    return answer.getAnswer();
     }}

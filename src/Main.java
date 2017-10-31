@@ -31,7 +31,8 @@ public static  User user = new User();
             boolean registred = registration.sendRegistrationData(packedREg,connectToServer);
             if(registred){
                 Autorisation autorisation = new Autorisation(connectToServer);
-                autorisation.autorize();
+                authorised = autorisation.autorize();
+                System.out.println("Hello "+user.getLogin());
             }else {
                 System.out.println("failed to authorise try again later");
                 connectToServer.socket.close();
@@ -48,8 +49,8 @@ public static  User user = new User();
                     TaskPicker taskPicker = new TaskPicker();
             command =taskPicker.pickTheTask();
             if(command==1){
-                CreateNewTask createNewTask = new CreateNewTask(connectToServer.socket,user);
-                createNewTask.run();
+                CreateNewTask createNewTask = new CreateNewTask(connectToServer.socket,user,command);
+                createNewTask.start();
             }else if(command == 2){
 
             }else {
