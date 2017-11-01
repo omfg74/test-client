@@ -48,7 +48,7 @@ public class Registration {
 //            System.out.println("Registration "+answer);
            JsonParser jsonParser = new JsonParser();
            answer = jsonParser.parseRegAnswer(ans);
-            System.out.println(answer.getText());
+//            System.out.println(answer.getText());
 
         } catch (IOException e) {
             System.out.println("Error sending registration data");

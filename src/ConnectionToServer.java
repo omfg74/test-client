@@ -22,6 +22,7 @@ InputStream in;
 
       } catch (Exception x) {
           x.printStackTrace();
+          con("localhost");
           System.out.println("Connection error, try again later");
       }
 

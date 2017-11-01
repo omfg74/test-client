@@ -2,6 +2,7 @@ import Objects.User;
 import org.json.simple.JSONObject;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
@@ -52,9 +53,12 @@ public static  User user = new User();
                 CreateNewTask createNewTask = new CreateNewTask(connectToServer.socket,user,command);
                 createNewTask.start();
             }else if(command == 2){
+                CreateNewTask createNewTask = new CreateNewTask(connectToServer.socket,user,command);
+                createNewTask.start();
 
             }else {
                 System.exit(0);
+
             }
         }
 

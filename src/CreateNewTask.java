@@ -31,9 +31,14 @@ private int command;
             if(jo.get("taskType").toString().equals("RENDER")){
 
                 System.out.println(jo.get("status").toString()+" id "+jo.get("id").toString());
-//                dataInputStream.readUTF(); получить окончательный статус
+               // получить окончательный статус
+                String taskType =completeParcer();
+
+
+
+
             }else if(jo.get("taskType").toString().equals("list")){
-                System.out.println("still nothing");
+                jsonParser.parseList(taskResult);
             }
             System.out.println(taskResult);
 
@@ -41,5 +46,29 @@ private int command;
             e.printStackTrace();
         }
 
+    }
+    public String completeParcer(){
+        DataInputStream dataInputStream = null;
+        String s = "";
+        try {
+            dataInputStream = new DataInputStream(socket.getInputStream());
+           s=  dataInputStream.readUTF();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        JsonParser jsonParser1 = new JsonParser();
+        JSONObject jsonObject = jsonParser1.parseTheTaskResult(s);
+        String taskType = (String) jsonObject.get("taskType");
+        if(taskType.equalsIgnoreCase("update")){
+
+           long id = Long.parseLong(  jsonObject.get("id").toString());
+           String name = (String) jsonObject.get("name");
+           String status = (String) jsonObject.get("status");
+           String result = (String) jsonObject.get("result");
+            System.out.println("Task "+ id+" is "+status);
+
+        }
+        return taskType;
     }
 }

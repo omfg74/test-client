@@ -1,10 +1,13 @@
 import Objects.Answer;
+import Objects.Task;
 import Objects.TaskList;
 import Objects.User;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import java.util.ArrayList;
 
 public class JsonParser {
     public User parseNameSurname(String nameSurname, User user){
@@ -75,13 +78,37 @@ public class JsonParser {
         JSONParser jsonParser = new JSONParser();
         JSONObject jo=null;
         try {
-            jo = (JSONObject)jsonParser.parse(taskResult);
+ jo = (JSONObject)jsonParser.parse(taskResult);
             String a =(String)jo.get("taskType");
-            System.out.println(a);
+//            System.out.println(a);
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return jo;
+    }
+
+    public void parseList(String taskResult) {
+        JSONParser jsonParser = new JSONParser();
+        try {
+            JSONObject jo = (JSONObject)jsonParser.parse(taskResult);
+            ArrayList<Task>tasks = new ArrayList<>();
+            JSONArray ar  = (JSONArray) jo.get("content");
+
+            for (int i = 0; i < ar.size() ; i++) {
+                if(i%2==0){
+                    System.out.print(ar.get(i)+" ");
+                }else
+                    System.out.println(ar.get(i));
+
+                }
+                System.out.println();
+
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
     }
 }
