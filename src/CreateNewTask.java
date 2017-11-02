@@ -25,12 +25,12 @@ private int command;
             dataOutputStream.writeUTF(paxkedJson.toString());
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
             String taskResult = dataInputStream.readUTF();
-            System.out.println(taskResult);
+//            System.out.println(taskResult);
             JsonParser jsonParser = new JsonParser();
             JSONObject jo = jsonParser.parseTheTaskResult(taskResult);
             if(jo.get("taskType").toString().equals("RENDER")){
 
-                System.out.println(jo.get("status").toString()+" id "+jo.get("id").toString());
+                System.out.println("Task "+jo.get("id").toString()+" is "+jo.get("status").toString());
                // получить окончательный статус
                 String taskType =completeParcer();
 
@@ -40,7 +40,7 @@ private int command;
             }else if(jo.get("taskType").toString().equals("list")){
                 jsonParser.parseList(taskResult);
             }
-            System.out.println(taskResult);
+//            System.out.println(taskResult);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -68,7 +68,12 @@ private int command;
            String result = (String) jsonObject.get("result");
             System.out.println("Task "+ id+" is "+status);
 
+
+        }else if(jsonObject.get("taskType").toString().equals("list")){
+            JsonParser jsonParser = new JsonParser();
+            jsonParser.parseList(s);
         }
         return taskType;
+        }
+
     }
-}
